@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ajts.androidmads.library.SQLiteToExcel;
+
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button btnAddData;
     Button btnView;
     Button btnExport;
+    SQLiteToExcel sqLiteToExcel;
 
     private static final String[] items = new String[] {"Food","Hospital","Grocery","Electricity","Donation","Transportation","Gift","Others"};
     private static int totalamt=0;
@@ -54,14 +57,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dropdown.setAdapter(adapter);
         dropdown.setOnItemSelectedListener(this);
 
+        totalamt = mydb.getAmount();
+        showamt.setText(Integer.toString(totalamt));
+
         Calendar calendar = Calendar.getInstance(); // getting the current date
         final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH);
+        final int month = calendar.get(Calendar.MONTH) + 1;
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        date= day+"/"+month+"/"+year;
+        showamt.setText(date);
 
         AddData();
 
-        editDate.setOnClickListener(new View.OnClickListener() { //date dialog show
+        //Date dialog show.
+
+        editDate.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -76,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             datePickerDialog.show();
              }
             } );
-        //view data
+
+
+        //View Activity
 
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,16 +98,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+
+       //EXPORT SQLITE TO XLS
+
+        sqLiteToExcel = new SQLiteToExcel(this, "expense.db");
+        export();
     }
 
-  @Override
-    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-              //  i=position;
-      //String text1 = dropdown.getSelectedItem().toString();
+        public void export() {
+        btnExport.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sqLiteToExcel.exportSingleTable("expense_table", "expensetable.xls", new SQLiteToExcel.ExportListener() {
+                            @Override
+                            public void onStart() {
 
-  }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                            @Override
+                            public void onCompleted(String filePath) {
+                                Toast.makeText(MainActivity.this , "Data Successfully Exported", Toast.LENGTH_LONG).show();
+
+                            }
+                            @Override
+                            public void onError(Exception e) {
+                                Toast.makeText(MainActivity.this , "Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+
+
+                            }
+                        });
+
+                    }
+                }
+        );
 
         }
 
@@ -109,10 +144,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                      if (isInserted == true) {
                          Toast.makeText(MainActivity.this, "Data Inserted", Toast.LENGTH_LONG).show();
-                         amt= Integer.parseInt(editAmount.getText().toString());
-                         totalamt+=amt;
+                        /* amt= Integer.parseInt(editAmount.getText().toString());
+                         totalamt+=amt;*/
                          if(showamt!= null)
-                             showamt.setText(Integer.toString(totalamt));
+                             //showamt.setText(Integer.toString(totalamt));
                          editAmount.setText("");
                          editNote.setText("");
                          editDate.setText("");
@@ -126,6 +161,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
         );
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
 

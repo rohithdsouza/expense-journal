@@ -11,7 +11,8 @@
         android:layout_weight="1"
         android:text="TextView"
         android:textColor="#DD2C00"
-        android:textSize="22sp" />
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="174dp"

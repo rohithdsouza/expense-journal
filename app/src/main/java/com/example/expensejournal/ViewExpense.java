@@ -25,14 +25,18 @@ public class ViewExpense extends AppCompatActivity {
         setContentView(R.layout.expense_view);
 
         DatabaseHelper db = new DatabaseHelper(this);
-        ArrayList<HashMap<String, String>> userList = db.getExpense();
+        ArrayList<HashMap<String, String>> userList = db.getExpense(); //Getting the expense from db
 
         ListView lv = (ListView) findViewById(R.id.expenses_list_view);
-        ListAdapter adapter = new SimpleAdapter(ViewExpense.this, userList, R.layout.list_view_row,new String[]{"date","amount","category","note"},
-                new int[]{R.id.date, R.id.amount, R.id.category,R.id.note});
+        ListAdapter adapter = new SimpleAdapter(ViewExpense.this,
+                userList,
+                R.layout.list_view_row,
+                new String[]{"date","amount","category","note"},
+                new int[]{R.id.date, R.id.amount, R.id.category,R.id.note} );
         lv.setAdapter(adapter);
 
         //getting total amount in list
+
         for (HashMap<String, String> entry : userList) {
             int value=0;
             for (String key : entry.keySet()) {

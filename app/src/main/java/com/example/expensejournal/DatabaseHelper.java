@@ -57,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //get expense details
+
     public ArrayList<HashMap<String, String>> getExpense(){
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
@@ -74,5 +75,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  expenseList;
     }
 
+    //get amount only
+
+    public int getAmount() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int total=0;
+        String query = "SELECT AMOUNT FROM "+ TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext() ) {
+            int amt= cursor.getInt(cursor.getColumnIndex(COL_2));
+            total+=amt;
+        }
+        return total;
+    }
 
 }
