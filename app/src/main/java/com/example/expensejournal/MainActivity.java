@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ajts.androidmads.library.SQLiteToExcel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -110,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ArrayList<String> columnsToExclude = new ArrayList<String>();
+                        columnsToExclude.add("ID");
+                        sqLiteToExcel.setExcludeColumns(columnsToExclude);
+
                         sqLiteToExcel.exportSingleTable("expense_table", "expensetable.xls", new SQLiteToExcel.ExportListener() {
                             @Override
                             public void onStart() {
