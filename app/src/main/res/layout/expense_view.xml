@@ -49,6 +49,30 @@
                 android:singleLine="true"
                 android:textSize="44sp" />
 
+            <View
+                android:id="@+id/horizontal_line"
+                android:layout_width="2dp"
+                android:layout_height="80dp"
+                android:background="#D3D3D3"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="180dp"/>
+
+            <Spinner
+                android:id="@+id/view_spinner"
+                android:layout_width="192dp"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/horizontal_line"
+                android:layout_marginLeft="11dp"
+                android:layout_marginTop="40dp"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/horizontal_line"
+                android:layout_marginLeft="11dp"
+                android:text="Category"
+                android:textSize="18sp" />
 
 
         </RelativeLayout>

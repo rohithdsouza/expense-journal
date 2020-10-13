@@ -59,10 +59,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //get expense details
 
-    public ArrayList<HashMap<String, String>> getExpense(){
+    public ArrayList<HashMap<String, String>> getExpense(String category){
+        String query;
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
-        String query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
+        if (category.equals("All"))
+            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
+        else
+            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME +" WHERE CATEGORY LIKE '" + category + "'";
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
             HashMap<String,String> user = new HashMap<>();
@@ -74,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             expenseList.add(user);
         }
         return  expenseList;
+
     }
 
     //get amount only
@@ -109,5 +114,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return total;
 
+    }
+
+    public ArrayList<HashMap<String, String>> getByCategory(String category){
+        String query;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
+        if (category.equals("All"))
+            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
+        else
+        query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME +" WHERE CATEGORY LIKE '" + category + "'";
+
+        Cursor cursor = db.rawQuery(query,null);
+        while (cursor.moveToNext()){
+            HashMap<String,String> user = new HashMap<>();
+            user.put("date",cursor.getString(cursor.getColumnIndex(COL_1)));
+            user.put("amount",cursor.getString(cursor.getColumnIndex(COL_2)));
+            user.put("category",cursor.getString(cursor.getColumnIndex(COL_3)));
+            user.put("note",cursor.getString(cursor.getColumnIndex(COL_4)));
+            Log.d("myTag", user.get("amount"));
+            expenseList.add(user);
+        }
+        return  expenseList;
     }
 }
