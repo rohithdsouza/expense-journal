@@ -11,7 +11,7 @@
         android:id="@+id/total_expense_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total Expense :"
+        android:text="Today's Expense :"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#009688"
         android:textSize="24sp"
@@ -33,7 +33,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.711"
+        app:layout_constraintHorizontal_bias="0.652"
         app:layout_constraintStart_toEndOf="@+id/total_expense_text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.104" />

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dropdown.setAdapter(adapter);
         dropdown.setOnItemSelectedListener(this);
 
-        totalamt = mydb.getAmount();
+        totalamt = mydb.getTodayAmount();
         showamt.setText(Integer.toString(totalamt));
 
         Calendar calendar = Calendar.getInstance(); // getting the current date
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final int month = calendar.get(Calendar.MONTH) + 1;
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
         date= day+"/"+month+"/"+year;
-        showamt.setText(date);
+        editDate.setText(date);
 
         AddData();
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                          Toast.makeText(MainActivity.this, "Data Inserted", Toast.LENGTH_LONG).show();
                         /* amt= Integer.parseInt(editAmount.getText().toString());
                          totalamt+=amt;*/
-                         if(showamt!= null)
+                       //  if(showamt!= null)
                              //showamt.setText(Integer.toString(totalamt));
                          editAmount.setText("");
                          editNote.setText("");

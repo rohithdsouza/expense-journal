@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -89,4 +90,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return total;
     }
 
+    //get today's amount
+
+    public int getTodayAmount() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String date;
+        Calendar calendar = Calendar.getInstance(); // getting the current date
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH) + 1;
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        date= day+"/"+month+"/"+year;
+        int total=0;
+        String query ="SELECT AMOUNT FROM " + TABLE_NAME + " WHERE DATE LIKE '"+ date+"'";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor.moveToNext() ) {
+            int amt= cursor.getInt(cursor.getColumnIndex(COL_2));
+            total+=amt;
+        }
+        return total;
+
+    }
 }
