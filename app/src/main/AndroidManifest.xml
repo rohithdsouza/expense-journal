@@ -17,6 +17,9 @@
 
         </intent-filter>
     </activity>
+        <activity android:name=".ViewExpense"
+            android:parentActivityName=".MainActivity" />
+
 </application>
 
 </manifest>

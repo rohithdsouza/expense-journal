@@ -2,11 +2,18 @@ package com.example.expensejournal;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    TextView txtAmt;
     //database table fields
     public static final String DATABASE_NAME = "expense.db";
     public static final String TABLE_NAME = "expense_table";
@@ -47,6 +54,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return true;
 
 
+    }
+
+    //get expense details
+    public ArrayList<HashMap<String, String>> getExpense(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
+        String query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
+        Cursor cursor = db.rawQuery(query,null);
+        while (cursor.moveToNext()){
+            HashMap<String,String> user = new HashMap<>();
+            user.put("date",cursor.getString(cursor.getColumnIndex(COL_1)));
+            user.put("amount",cursor.getString(cursor.getColumnIndex(COL_2)));
+            user.put("category",cursor.getString(cursor.getColumnIndex(COL_3)));
+            user.put("note",cursor.getString(cursor.getColumnIndex(COL_4)));
+            Log.d("myTag", user.get("amount"));
+            expenseList.add(user);
+        }
+        return  expenseList;
     }
 
 

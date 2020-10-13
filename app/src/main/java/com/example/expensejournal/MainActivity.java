@@ -1,6 +1,7 @@
 package com.example.expensejournal;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     EditText editDate;
     TextView showamt;
     Button btnAddData;
+    Button btnView;
+    Button btnExport;
 
     private static final String[] items = new String[] {"Food","Hospital","Grocery","Electricity","Donation","Transportation","Gift","Others"};
     private static int totalamt=0;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mydb = new DatabaseHelper(this);
         editAmount= (EditText)findViewById(R.id.edit_text_amount);
         btnAddData= (Button) findViewById(R.id.btn_add);
+        btnView= (Button) findViewById(R.id.btn_view);
+        btnExport= (Button) findViewById(R.id.btn_export);
         showamt= (TextView) findViewById(R.id.total_value_text);
         dropdown= (Spinner)findViewById(R.id.spinner_category);
         editNote= (EditText)findViewById(R.id.editTextNote);
@@ -56,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         AddData();
 
-    editDate.setOnClickListener(new View.OnClickListener() { //date dialog show
-
+        editDate.setOnClickListener(new View.OnClickListener() { //date dialog show
         @Override
         public void onClick(View v) {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -70,8 +74,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             } , year , month , day);
             datePickerDialog.show();
-        }
-    } );
+             }
+            } );
+        //view data
+
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ViewExpense.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
