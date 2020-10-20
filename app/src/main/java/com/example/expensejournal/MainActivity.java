@@ -13,9 +13,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ajts.androidmads.library.SQLiteToExcel;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button btnAddData;
     Button btnView;
     Button btnExport;
+    Button btnSignout;
     SQLiteToExcel sqLiteToExcel;
+    GoogleSignInClient mGoogleSignInClient;
 
     private static final String[] items = new String[] {"Food","Hospital","Grocery","Electricity","Donation","Transportation","Gift","Others"};
     private static int totalamt=0;
@@ -52,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dropdown= (Spinner)findViewById(R.id.spinner_category);
         editNote= (EditText)findViewById(R.id.editTextNote);
         editDate= (EditText)findViewById(R.id.editTextDate);
+        btnSignout= (Button) findViewById(R.id.btn_signout);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String> (MainActivity.this, android.R.layout.simple_spinner_item,items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -60,6 +69,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         totalamt = mydb.getTodayAmount();
         showamt.setText(Integer.toString(totalamt));
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         Calendar calendar = Calendar.getInstance(); // getting the current date
         final int year = calendar.get(Calendar.YEAR);
@@ -94,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(MainActivity.this, ViewExpense.class);
                 startActivity(intent);
             }
@@ -104,9 +120,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         sqLiteToExcel = new SQLiteToExcel(this, "expense.db");
         export();
+
+        //sign out
+
+        btnSignout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    // ...
+                    case R.id.btn_signout:
+                        signOut();
+                        break;
+                    // ...
+                }
+            }
+        });
     }
 
-        public void export() {
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                      Toast.makeText(MainActivity.this, "Signed Out Successfully", Toast.LENGTH_LONG).show();
+                      finish();
+                       /* Intent intent = new Intent(MainActivity.this , SigninActivity.class);
+                        startActivity(intent);*/
+                    }
+                });
+
+    }
+
+    public void export() {
         btnExport.setOnClickListener(
                 new View.OnClickListener() {
                     @Override

@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Expense Journal</string>
+
+    <string name="filter_expenses">Filter</string>
+    <string name="filter_option_today">By Today</string>
+    <string name="filter_option_week">By Week</string>
+    <string name="filter_option_month">By Month</string>
+    <string name="filter_option_date">By Date</string>
+    <string name="filter_option_range">By Date range</string>
+    <string name="filter_todays_expenses">Today\'s expenses</string>
+    <string name="filter_weeks_expenses">Week\'s expenses</string>
+    <string name="filter_months_expenses">Month\'s expenses</string>
+    <string name="filter_date_expenses">For %s</string>
+    <string name="filter_date_range_expenses">%1$s - %2$s</string>
 </resources>
