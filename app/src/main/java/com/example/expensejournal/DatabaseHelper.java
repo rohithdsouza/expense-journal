@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     TextView txtAmt;
+    MainActivity obj = new MainActivity();
     //database table fields
     public static final String DATABASE_NAME = "expense.db";
     public static final String TABLE_NAME = "expense_table";
@@ -39,72 +40,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             onCreate(db);
     }
 
-    public boolean insertData(String date  , int amount , String category , String Note ) {
+    public boolean insertData(String date  , int amount , String category , String Note )
+    {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1, date);
         contentValues.put(COL_2,amount);
         contentValues.put(COL_3, category);
         contentValues.put(COL_4,Note);
-
         long result = db.insert(TABLE_NAME,null, contentValues);
             if(result == -1)
                 return false;
             else
                 return true;
-
-
     }
 
-    //get expense details
-
-    public ArrayList<HashMap<String, String>> getExpense(String category){
-        String query;
+    //get today's amount for MainS
+    public int getTodayAmount()
+    {
         SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
-        if (category.equals("All"))
-            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
-        else
-            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME +" WHERE CATEGORY LIKE '" + category + "'";
-        Cursor cursor = db.rawQuery(query,null);
-        while (cursor.moveToNext()){
-            HashMap<String,String> user = new HashMap<>();
-            user.put("date",cursor.getString(cursor.getColumnIndex(COL_1)));
-            user.put("amount",cursor.getString(cursor.getColumnIndex(COL_2)));
-            user.put("category",cursor.getString(cursor.getColumnIndex(COL_3)));
-            user.put("note",cursor.getString(cursor.getColumnIndex(COL_4)));
-            Log.d("myTag", user.get("amount"));
-            expenseList.add(user);
-        }
-        return  expenseList;
-
-    }
-
-    //get amount only
-
-    public int getAmount() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int total=0;
-        String query = "SELECT AMOUNT FROM "+ TABLE_NAME;
-        Cursor cursor = db.rawQuery(query, null);
-        while (cursor.moveToNext() ) {
-            int amt= cursor.getInt(cursor.getColumnIndex(COL_2));
-            total+=amt;
-        }
-        return total;
-    }
-
-    //get today's amount
-
-    public int getTodayAmount() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String date;
-        Calendar calendar = Calendar.getInstance(); // getting the current date
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH) + 1;
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        date= day+"/"+month+"/"+year;
+        String date=obj.getCurrentDate();
         int total=0;
         String query ="SELECT AMOUNT FROM " + TABLE_NAME + " WHERE DATE LIKE '"+ date+"'";
         Cursor cursor = db.rawQuery(query, null);
@@ -113,17 +68,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             total+=amt;
         }
         return total;
-
     }
 
-    public ArrayList<HashMap<String, String>> getByCategory(String category){
+    //returns expense data as a arrayList
+    public ArrayList<HashMap<String, String>> getExpense(String category)
+    {
         String query;
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<HashMap<String, String>> expenseList = new ArrayList<>();
         if (category.equals("All"))
-            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME;
+            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME + " ORDER BY ID DESC";
         else
-        query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME +" WHERE CATEGORY LIKE '" + category + "'";
+            query = "SELECT DATE, AMOUNT, CATEGORY, NOTE FROM "+ TABLE_NAME +" WHERE CATEGORY LIKE '" + category + "' ORDER BY ID DESC" ;
 
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
@@ -136,5 +92,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             expenseList.add(user);
         }
         return  expenseList;
+
     }
+
+
+    public ArrayList<HashMap<String,String>> getExpenseByDateRange (String from , String to , String category)
+    {
+        SQLiteDatabase db= this.getWritableDatabase();
+        String query;
+        ArrayList<HashMap<String,String>> expenseList = new ArrayList<>();
+        if(category == "All")
+        query = "SELECT DATE , AMOUNT , CATEGORY , NOTE " + TABLE_NAME + " WHERE DATE BETWEEN "+ from + " AND " +to+" ORDER BY ID DESC";
+        else
+            query= "SELECT DATE , AMOUNT , CATEGORY , NOTE " + TABLE_NAME + " WHERE DATE BETWEEN "+ from + " AND " +to+
+                    " AND CATEGORY LIKE '" + category + "'"+" ORDER BY ID DESC";
+
+        Cursor cursor = db.rawQuery(query,null);
+        while (cursor.moveToNext())
+        {
+            HashMap<String,String> expenseElement = new HashMap<>();
+            expenseElement.put("date",cursor.getString(cursor.getColumnIndex(COL_1)));
+            expenseElement.put("amount",cursor.getString(cursor.getColumnIndex(COL_2)));
+            expenseElement.put("category",cursor.getString(cursor.getColumnIndex(COL_3)));
+            expenseElement.put("note",cursor.getString(cursor.getColumnIndex(COL_4)));
+            expenseList.add(expenseElement);
+        }
+        return expenseList;
+    }
+
+    public ArrayList<HashMap<String,String>> getExpenseByDate (String date , String category)
+    {
+        SQLiteDatabase db= this.getWritableDatabase();
+        String query;
+        ArrayList<HashMap<String,String>> expenseList = new ArrayList<>();
+        if(category != "All")
+         query = "SELECT DATE , AMOUNT , CATEGORY , NOTE " + TABLE_NAME + " WHERE DATE LIKE  '"+ date +
+                "' AND CATEGORY LIKE '" + category + "'"+ " ORDER BY ID DESC";
+        else
+          query ="SELECT DATE, AMOUNT, CATEGORY, NOTE " + TABLE_NAME + " WHERE DATE LIKE '"+ date + "' ORDER BY ID DESC";
+
+        Cursor cursor = db.rawQuery(query,null);
+        while (cursor.moveToNext())
+        {
+            HashMap<String,String> expenseElement = new HashMap<>();
+            expenseElement.put("date",cursor.getString(cursor.getColumnIndex(COL_1)));
+            expenseElement.put("amount",cursor.getString(cursor.getColumnIndex(COL_2)));
+            expenseElement.put("category",cursor.getString(cursor.getColumnIndex(COL_3)));
+            expenseElement.put("note",cursor.getString(cursor.getColumnIndex(COL_4)));
+            expenseList.add(expenseElement);
+        }
+        return expenseList;
+    }
+
 }
+
